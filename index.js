@@ -1,6 +1,8 @@
 var path = require('path')
   , fs = require('fs')
 
+var myAppMap = {}
+
 var createMap = function(directory, callback){
   var schema = {};
   var dirMap = fs.readdirSync(directory);
@@ -34,6 +36,7 @@ var appMap = function(){
   })
   mMap['log']=path.join(root, 'log');
   mMap['map']=path.join(root, 'map');
+  myAppMap = mMap;
   return mMap;
 }
 
@@ -50,7 +53,24 @@ var dirMap = function(root){
   return mMap;
 }
 
-module.exports.dirMap = function(root) { return dirMap(root); }
+//module.exports.dirMap = function(root) { return dirMap(root); }
 
-module.exports.appMap = function() { return appMap(); }
+//module.exports.appMap = function() { return appMap(); }
 
+/*module.exports = {
+
+  dirMap : function(root) { return dirMap(root); },
+
+  appMap : function() { return appMap(); }
+
+}*/
+
+declare module "folder-mapper" {
+
+  export var myAppMap;
+
+  export function dirMap(root: string):{};
+
+  export function appMap():{};
+
+} 
