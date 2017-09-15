@@ -1,0 +1,27 @@
+{
+  "name": "folder-mapper",
+  "version": "1.0.1",
+  "description": "Map your application from app base file or from a given directory",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test especified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RaulSantosCalvo/folder-mapper.git"
+  },
+  "keywords": [
+    "mean",
+    "app",
+    "map",
+    "mapper",
+    "folder",
+    "directory"
+  ],
+  "author": "RaulSantosCalvo",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/RaulSantosCalvo/folder-mapper/issues"
+  },
+  "homepage": "https://github.com/RaulSantosCalvo/folder-mapper#readme"
+}
