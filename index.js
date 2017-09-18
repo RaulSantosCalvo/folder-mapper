@@ -9,26 +9,36 @@ var MapHandler = function () {
   var mAppMap = {}
     , mTestMap = {};
 
-  self.handleMap = function(map){
+  self.handleMap = function(map, callback){
     switch (map){
       case 'app' :
         if (mAppMap==null) {
-          mAppMap = self.appMap();
+          self.appMap(function(mMap){
+            myAppMap = mMap;
+            callback(myAppMap);
+          });
         }
-        return mAppMap;
+        else {
+          callback(myAppMap);
+        }        
         break;
       case 'test' :
-      if (mTestMap==null) {
-          mTestMap = self.testMap();
+        if (mTestMap==null) {
+          self.testMap(function(mMap){
+            mTestMap = mMap;
+            callback(mTestMap);
+          });
         }
-        return mTestMap;
+        else {
+          callback(mTestMap);
+        }        
         break;
       default:
         return null;      
     }
   }
 
-  self.appMap = function(){
+  self.appMap = function(callback){
     var mMap = {};
     var root = path.dirname(require.main.filename);
     createMap(path.join(root, 'app'), function(map){
@@ -39,11 +49,11 @@ var MapHandler = function () {
     })
     mMap['log']=path.join(root, 'log');
     mMap['map']=path.join(root, 'map');
-    return mMap;
+    callback(mMap);
   }
 
-  self.testMap = function(){
-    return 'ey';
+  self.testMap = function(callback){
+    callback('ey');
   }
 
 }
@@ -114,14 +124,18 @@ module.exports = {
     if (mMapHandler==null) {
       mMapHandler = new MapHandler();
     }
-    return mMapHandler.handleMap('app'); 
+    mMapHandler.handleMap('app', function(map){
+      return map;
+    }); 
   },
 
   testMap : function() { 
     if (mMapHandler==null) {
       mMapHandler = new MapHandler();
     }
-    return mMapHandler.handleMap('test'); 
+    return mMapHandler.handleMap('test', function(map){
+      return map;
+    }); 
   }
 
 }
