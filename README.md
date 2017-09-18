@@ -64,13 +64,13 @@ At the moment of creating the object, the function gets the application running 
 In case it is a test environment (mocha, karma, jasmine) it stores the object from the app.js file located in application/server, to make the requires in every file be able to pass the tests.
 
 
-# map.map() or map.map('app')
+### map.map() or map.map('app')
 
 this function returns the full app object, based on your environment. This javascript object can be used and iterated as a JSON object.
 
-# map.getModel(<route>)
-# map.getService(<route>)
-# map.getController(<route>)
+### map.getModel(<route>)
+### map.getService(<route>)
+### map.getController(<route>)
   
 these functions give the route to the file located in the package for the end route given.
 
@@ -78,7 +78,7 @@ example: map.getModel('dog') => route_to_your_application/app/models/dog.js
 example: map.getModel('bigger_application/dog') => route_to_your_application/app/models/bigger_application/dog.js
 
 
-# map.getConfig(<file>)
+### map.getConfig(<file>)
   
 this function gives the route to the configuration file requested
 
