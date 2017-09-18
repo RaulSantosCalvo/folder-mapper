@@ -137,7 +137,7 @@ module.exports = {
 
   getModel : function(fullroute){
     checkHandler();
-    return getElement('models', fullroute.split('/'));
+    return getElement('models', fullroute);
   }
 
 }
