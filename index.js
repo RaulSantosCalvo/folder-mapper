@@ -1,7 +1,52 @@
 var path = require('path')
   , fs = require('fs')
 
-var myAppMap = {}
+var mMapHandler;
+
+var MapHandler = function () {
+  var self = this;
+
+  var mAppMap = {}
+    , mTestMap = {};
+
+  self.handleMap = function(map){
+    switch (map){
+      case 'app' :
+        if (mAppMap==null) {
+          mAppMap = self.appMap();
+        }
+        return mAppMap;
+        break;
+      case 'test' :
+      if (mTestMap==null) {
+          mTestMap = self.testMap();
+        }
+        return mTestMap;
+        break;
+      default:
+        return null;      
+    }
+  }
+
+  self.appMap = function(){
+    var mMap = {};
+    var root = path.dirname(require.main.filename);
+    createMap(path.join(root, 'app'), function(map){
+      mMap['app'] = map;
+    })
+    createMap(path.join(root, 'config'), function(map){
+      mMap['config'] = map;
+    })
+    mMap['log']=path.join(root, 'log');
+    mMap['map']=path.join(root, 'map');
+    return mMap;
+  }
+
+  self.testMap = function(){
+    return 'ey';
+  }
+
+}
 
 var createMap = function(directory, callback){
   var schema = {};
@@ -25,7 +70,7 @@ var createMap = function(directory, callback){
   callback(schema);
 }
 
-var appMap = function(){
+/*var appMap = function(){
   var mMap = {};
   var root = path.dirname(require.main.filename);
   createMap(path.join(root, 'app'), function(map){
@@ -38,7 +83,7 @@ var appMap = function(){
   mMap['map']=path.join(root, 'map');
   myAppMap = mMap;
   return mMap;
-}
+}*/
 
 var dirMap = function(root){
   var mMap = {};
@@ -53,24 +98,30 @@ var dirMap = function(root){
   return mMap;
 }
 
+
+
 //module.exports.dirMap = function(root) { return dirMap(root); }
 
 //module.exports.appMap = function() { return appMap(); }
 
-/*module.exports = {
+module.exports = {
 
-  dirMap : function(root) { return dirMap(root); },
+  dirMap : function(root) { 
+    return dirMap(root); 
+  },
 
-  appMap : function() { return appMap(); }
+  appMap : function() {
+    if (mMapHandler==null) {
+      mMapHandler = new MapHandler();
+    }
+    return mMapHandler.handleMap('app'); 
+  },
 
-}*/
+  testMap : function() { 
+    if (mMapHandler==null) {
+      mMapHandler = new MapHandler();
+    }
+    return mMapHandler.handleMap('test'); 
+  }
 
-declare module "folder-mapper" {
-
-  export var myAppMap;
-
-  export function dirMap(root: string):{};
-
-  export function appMap():{};
-
-} 
+}
