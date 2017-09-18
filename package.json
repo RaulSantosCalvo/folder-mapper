@@ -1,6 +1,6 @@
 {
   "name": "folder-mapper",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Map your application from app base file or from a given directory",
   "main": "index.js",
   "scripts": {
