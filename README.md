@@ -56,7 +56,7 @@ When you use any function given by the map handler an internal object is created
 
 ## Functions:
 
-# map.map(<your_route>)
+### map.map(<your_route>)
 
 this function returns a personal map of the requested folder. Is commonly used as map.map(__dirname) to know about the same file location.
 
