@@ -14,8 +14,8 @@ var MapHandler = function () {
       case 'app' :
         if (mAppMap==null) {
           self.appMap(function(mMap){
-            myAppMap = mMap;
-            callback(myAppMap);
+            mAppMap = mMap;
+            callback(mAppMap);
           });
         }
         else {
