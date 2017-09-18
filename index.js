@@ -19,7 +19,7 @@ var MapHandler = function () {
           });
         }
         else {
-          callback(myAppMap);
+          callback(mAppMap);
         }        
         break;
       case 'test' :
