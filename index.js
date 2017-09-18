@@ -15,6 +15,7 @@ var MapHandler = function () {
         if (mAppMap==null) {
           self.appMap(function(mMap){
             mAppMap = mMap;
+            console.log("node| map: ", mMap);
             callback(mAppMap);
           });
         }
@@ -41,6 +42,7 @@ var MapHandler = function () {
   self.appMap = function(callback){
     var mMap = {};
     var root = path.dirname(require.main.filename);
+    console.log("node| root: ", root);
     createMap(path.join(root, 'app'), function(map){
       mMap['app'] = map;
     })
