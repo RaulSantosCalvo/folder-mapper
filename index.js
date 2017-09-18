@@ -2,60 +2,44 @@ var path = require('path')
   , fs = require('fs')
 
 var mMapHandler;
+var process;
 
 var MapHandler = function () {
   var self = this;
 
-  var mAppMap = {}
-    , mTestMap = {};
+  var mAppMap
+    , mTestMap;
 
-  self.handleMap = function(map, callback){
-    switch (map){
-      case 'app' :
+  self.handleMap = function(route, callback){
+    if(route && route!=null && route!='app'){
+      return dirMap(route);
+    }
+    else {
+      var processroute = require.main.filename.split('\\');
+      process = processroute[processroute.length-1];
+      if (process.includes('app')){
         if (mAppMap==null) {
-          self.appMap(function(mMap){
-            mAppMap = mMap;
-            console.log("node| map: ", mMap);
-            callback(mAppMap);
-          });
+          mAppMap = appMap(path.dirname(require.main.filename));
+          return mAppMap;
         }
         else {
-          callback(mAppMap);
-        }        
-        break;
-      case 'test' :
+          return mAppMap;
+        }
+      }
+      else if (process.includes('mocha') || process.includes('karma') || process.includes('jasmine')){
         if (mTestMap==null) {
-          self.testMap(function(mMap){
-            mTestMap = mMap;
-            callback(mTestMap);
-          });
+          mTestMap = testMap();
+          return mTestMap;
         }
         else {
-          callback(mTestMap);
-        }        
-        break;
-      default:
-        return null;      
+          return mTestMap;
+        }
+      }
     }
   }
 
-  self.appMap = function(callback){
-    var mMap = {};
-    var root = path.dirname(require.main.filename);
-    console.log("node| root: ", root);
-    createMap(path.join(root, 'app'), function(map){
-      mMap['app'] = map;
-    })
-    createMap(path.join(root, 'config'), function(map){
-      mMap['config'] = map;
-    })
-    mMap['log']=path.join(root, 'log');
-    mMap['map']=path.join(root, 'map');
-    callback(mMap);
-  }
-
-  self.testMap = function(callback){
-    callback('ey');
+  self.test = function(){
+    return require.main.filename;
   }
 
 }
@@ -82,20 +66,25 @@ var createMap = function(directory, callback){
   callback(schema);
 }
 
-/*var appMap = function(){
+var appMap = function(root, callback){
   var mMap = {};
-  var root = path.dirname(require.main.filename);
+  //var root = path.dirname(require.main.filename);
   createMap(path.join(root, 'app'), function(map){
     mMap['app'] = map;
   })
   createMap(path.join(root, 'config'), function(map){
     mMap['config'] = map;
   })
-  mMap['log']=path.join(root, 'log');
-  mMap['map']=path.join(root, 'map');
-  myAppMap = mMap;
-  return mMap;
-}*/
+
+  if (callback) callback(mMap);
+  else return mMap;
+}
+
+var testMap = function(callback){
+  var basepath = path.join(__dirname, '../../server');
+  console.log("basepath: ", basepath);
+  return appMap(basepath);
+}
 
 var dirMap = function(root){
   var mMap = {};
@@ -110,34 +99,45 @@ var dirMap = function(root){
   return mMap;
 }
 
+var getElement = function(package, route){
+  var element = mMapHandler.handleMap().app[package];
+  route.split('/').forEach(function(e){
+    element = element[e];
+  });
+  return element;
+}
 
-
-//module.exports.dirMap = function(root) { return dirMap(root); }
-
-//module.exports.appMap = function() { return appMap(); }
+var checkHandler = function(){
+  if (mMapHandler==null) {
+    mMapHandler = new MapHandler();
+  }
+}
 
 module.exports = {
 
-  dirMap : function(root) { 
-    return dirMap(root); 
+  map : function(order) {
+    checkHandler();
+    return mMapHandler.handleMap(order);
   },
 
-  appMap : function() {
-    if (mMapHandler==null) {
-      mMapHandler = new MapHandler();
-    }
-    mMapHandler.handleMap('app', function(map){
-      return map;
-    }); 
+  getConfig : function(element){
+    checkHandler();
+    return mMapHandler.handleMap().config[element];
   },
 
-  testMap : function() { 
-    if (mMapHandler==null) {
-      mMapHandler = new MapHandler();
-    }
-    return mMapHandler.handleMap('test', function(map){
-      return map;
-    }); 
+  getController : function(fullroute){
+    checkHandler();
+    return getElement('controllers', fullroute);
+  },
+
+  getService : function(fullroute){
+    checkHandler();
+    return getElement('services', fullroute);
+  },
+
+  getModel : function(fullroute){
+    checkHandler();
+    return getElement('models', fullroute.split('/'));
   }
 
 }
